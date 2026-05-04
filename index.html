@@ -270,6 +270,19 @@
       align-items: center;
       text-align: center;
       gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dimension-panel .button-row {
+      position: relative;
+      z-index: 2;
+      padding-bottom: 6px;
+    }
+
+    .dimension-panel .primary-btn {
+      position: relative;
+      z-index: 3;
     }
 
     .dimension-code {
@@ -1695,6 +1708,14 @@
       .question.enlarged {
         font-size: clamp(38px, 9.8vw, 50px);
         line-height: 1.22;
+      }
+
+      .dimension-panel {
+        padding-bottom: 22px;
+      }
+
+      .dimension-panel .button-row {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
       }
 
       .answer-zone {
