@@ -1,0 +1,2253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>前额叶功能评估</title>
+  <style>
+    :root {
+      --neural-indigo: #5b5391;
+      --deep-cortex: #2e2a4a;
+      --mist-lilac: #edeaf5;
+      --clinical-blue: #6b8bb0;
+      --muted-coral: #c67b6e;
+      --sage-mint: #7fa394;
+      --pure-canvas: #fcfbfe;
+      --ink: #1d1b2e;
+      --slate: #605b72;
+      --mist: #e4e1ec;
+      --white: #ffffff;
+      --shadow: 0 18px 48px rgba(46, 42, 74, 0.08);
+      --serif: "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "STSong", Georgia, serif;
+      --sans: "Source Han Sans SC", "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", Inter, system-ui, sans-serif;
+      --numeric: Fraunces, Georgia, "Times New Roman", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--pure-canvas);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(237, 234, 245, 0.52), rgba(252, 251, 254, 0) 280px),
+        var(--pure-canvas);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: min(100%, 920px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .screen {
+      display: none;
+      animation: rise 360ms ease both;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .panel {
+      min-height: calc(100vh - 76px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 30px;
+      padding: 28px 0;
+    }
+
+    .brain-wrap {
+      display: grid;
+      place-items: center;
+      color: var(--neural-indigo);
+    }
+
+    .brain {
+      width: min(300px, 76vw);
+      height: auto;
+    }
+
+    .brain path,
+    .brain line,
+    .brain circle {
+      vector-effect: non-scaling-stroke;
+    }
+
+    .brain .region-fill {
+      opacity: 0.15;
+    }
+
+    .brain .region-active {
+      fill: rgba(91, 83, 145, 0.26);
+      stroke: var(--neural-indigo);
+      stroke-width: 2.4;
+    }
+
+    .brain .region-secondary {
+      fill: rgba(107, 139, 176, 0.2);
+      stroke: var(--clinical-blue);
+      stroke-width: 1.8;
+    }
+
+    .brain .pfc {
+      fill: rgba(91, 83, 145, 0.18);
+      stroke: var(--neural-indigo);
+    }
+
+    .brain .pfc-core {
+      fill: rgba(91, 83, 145, 0.28);
+      stroke: var(--neural-indigo);
+    }
+
+    .brain .label-box {
+      fill: var(--pure-canvas);
+      stroke: var(--mist);
+    }
+
+    .brain.pulse .region-active {
+      animation: pulseStroke 3s ease-in-out infinite;
+    }
+
+    @keyframes pulseStroke {
+      0%, 100% {
+        stroke-width: 2;
+        opacity: 0.86;
+      }
+
+      50% {
+        stroke-width: 4;
+        opacity: 1;
+      }
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .title {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(30px, 8vw, 42px);
+      font-weight: 500;
+      line-height: 1.22;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      margin: 12px 0 0;
+      color: var(--slate);
+      font-size: 16px;
+      line-height: 1.75;
+      text-wrap: pretty;
+    }
+
+    .intro-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .intro-item {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      align-items: start;
+      padding: 18px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.66);
+      box-shadow: 0 10px 30px rgba(46, 42, 74, 0.04);
+    }
+
+    .intro-item strong {
+      color: var(--neural-indigo);
+      font-family: var(--numeric);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .intro-item span {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .primary-btn,
+    .ghost-btn {
+      min-height: 52px;
+      border-radius: 8px;
+      padding: 0 28px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .primary-btn {
+      width: min(100%, 360px);
+      background: var(--neural-indigo);
+      color: var(--white);
+      box-shadow: 0 16px 32px rgba(91, 83, 145, 0.18);
+    }
+
+    .primary-btn:hover,
+    .ghost-btn:hover,
+    .option:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:focus-visible,
+    .ghost-btn:focus-visible,
+    .option:focus-visible {
+      outline: 3px solid rgba(107, 139, 176, 0.35);
+      outline-offset: 3px;
+    }
+
+    .ghost-btn {
+      background: transparent;
+      border-color: var(--mist);
+      color: var(--deep-cortex);
+    }
+
+    .dimension-panel {
+      align-items: center;
+      text-align: center;
+      gap: 18px;
+    }
+
+    .dimension-code {
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .dimension-title {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(36px, 9vw, 52px);
+      font-weight: 500;
+      line-height: 1.1;
+    }
+
+    .dimension-subtitle {
+      margin: -6px 0 0;
+      color: var(--clinical-blue);
+      font-family: var(--numeric);
+      font-size: clamp(20px, 5vw, 26px);
+      font-style: italic;
+    }
+
+    .brain-region {
+      margin: 0 auto;
+      width: fit-content;
+      max-width: 100%;
+      padding: 9px 16px;
+      border: 1px solid rgba(91, 83, 145, 0.18);
+      border-radius: 999px;
+      background: rgba(237, 234, 245, 0.62);
+      color: var(--neural-indigo);
+      font-size: clamp(16px, 4.2vw, 19px);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .dimension-desc {
+      width: min(100%, 560px);
+      margin: 0;
+      color: var(--slate);
+      font-size: 16px;
+      line-height: 1.8;
+      text-wrap: pretty;
+    }
+
+    .dimension-visual {
+      width: min(100%, 520px);
+      padding: 18px 18px 14px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: 0 16px 34px rgba(46, 42, 74, 0.05);
+    }
+
+    .dimension-visual .brain {
+      width: min(340px, 80vw);
+    }
+
+    .visual-caption {
+      display: inline-flex;
+      gap: 7px;
+      align-items: flex-start;
+      justify-content: center;
+      margin: 8px 0 0;
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .alert-dot {
+      display: inline-grid;
+      flex: 0 0 auto;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      margin-top: 1px;
+      border-radius: 999px;
+      background: var(--neural-indigo);
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .quiz-shell {
+      min-height: calc(100vh - 76px);
+      display: flex;
+      flex-direction: column;
+      padding: 14px 0 30px;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      height: 4px;
+      margin-bottom: 22px;
+    }
+
+    .progress span {
+      overflow: hidden;
+      border-radius: 99px;
+      background: var(--mist);
+    }
+
+    .progress span::after {
+      display: block;
+      width: var(--fill, 0%);
+      height: 100%;
+      background: var(--neural-indigo);
+      content: "";
+      transition: width 280ms ease;
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .quiz-meta-left,
+    .quiz-meta-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .back-btn {
+      min-height: 34px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--deep-cortex);
+      cursor: pointer;
+      transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+    }
+
+    .back-btn:hover {
+      border-color: rgba(91, 83, 145, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .back-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.42;
+      transform: none;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      border-radius: 999px;
+      padding: 0 12px;
+      background: var(--mist-lilac);
+      color: var(--neural-indigo);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .question-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(42px, 7vh, 72px);
+      padding: 28px 0 46px;
+    }
+
+    .question {
+      width: min(100%, 720px);
+      margin: 0 auto;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(21px, 5vw, 28px);
+      font-weight: 500;
+      line-height: 1.55;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .answer-zone {
+      display: grid;
+      gap: 16px;
+      width: min(100%, 520px);
+      margin: 0 auto;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      width: 100%;
+      margin: 0;
+    }
+
+    .option {
+      min-height: 56px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .option.selected {
+      border-color: var(--neural-indigo);
+      background: var(--neural-indigo);
+      color: var(--white);
+    }
+
+    .answer-back {
+      width: min(48%, 190px);
+      min-height: 46px;
+      border-color: rgba(91, 83, 145, 0.22);
+      background: rgba(237, 234, 245, 0.45);
+      color: var(--neural-indigo);
+      justify-self: start;
+    }
+
+    .analysis-steps {
+      display: grid;
+      gap: 13px;
+      width: min(100%, 560px);
+      margin: 0 auto;
+    }
+
+    .analysis-step {
+      opacity: 0;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.6;
+      text-align: center;
+      animation: fadeStep 500ms ease forwards;
+    }
+
+    .analysis-step:nth-child(1) { animation-delay: 200ms; }
+    .analysis-step:nth-child(2) { animation-delay: 950ms; }
+    .analysis-step:nth-child(3) { animation-delay: 1700ms; }
+    .analysis-step:nth-child(4) { animation-delay: 2450ms; }
+    .analysis-step:nth-child(5) { animation-delay: 3200ms; }
+
+    @keyframes fadeStep {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .report {
+      display: none;
+      padding: 38px 0 64px;
+    }
+
+    .report.active {
+      display: block;
+      animation: rise 360ms ease both;
+    }
+
+    .report-cover,
+    .report-section,
+    .dimension-report,
+    .report-footer {
+      width: min(100%, 780px);
+      margin: 0 auto;
+      padding: clamp(34px, 8vw, 64px) 0;
+      border-bottom: 1px solid var(--mist);
+    }
+
+    .report-cover {
+      min-height: min(760px, calc(100vh - 80px));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .report-mark {
+      display: grid;
+      gap: 18px;
+      width: min(100%, 760px);
+      margin: 0 auto 28px;
+      padding: 18px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.58);
+      box-shadow: 0 18px 42px rgba(46, 42, 74, 0.06);
+    }
+
+    .report-mark-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 260px);
+      gap: 18px;
+      align-items: center;
+    }
+
+    .report-mark-visual {
+      padding: 14px 12px;
+      border-radius: 8px;
+      background: rgba(252, 251, 254, 0.82);
+    }
+
+    .report-mark-visual .brain {
+      width: 100%;
+      max-width: 340px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .report-mark-score {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(237, 234, 245, 0.94), rgba(255, 255, 255, 0.8));
+      border: 1px solid rgba(91, 83, 145, 0.12);
+    }
+
+    .report-mark-score .label {
+      color: var(--clinical-blue);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .report-mark-score .value {
+      color: var(--neural-indigo);
+      font-family: var(--numeric);
+      font-size: clamp(60px, 10vw, 88px);
+      font-weight: 400;
+      line-height: 0.92;
+    }
+
+    .report-mark-score .value small {
+      color: var(--slate);
+      font-size: 18px;
+      font-family: var(--sans);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    .report-mark-legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      padding: 6px 4px 0;
+    }
+
+    .report-mark-legend .legend-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .report-mark-legend .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+    }
+
+    .report-mark-legend .score {
+      color: var(--deep-cortex);
+      font-family: var(--numeric);
+      font-size: 16px;
+    }
+
+    .report-mark-foot {
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .report-kicker {
+      margin: 0 0 26px;
+      color: var(--clinical-blue);
+      font-family: var(--numeric);
+      font-size: 15px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .report-title {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(34px, 9vw, 52px);
+      font-weight: 500;
+      line-height: 1.18;
+    }
+
+    .report-date {
+      margin: 20px 0 28px;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .report-summary-text {
+      width: min(100%, 560px);
+      margin: 14px auto 0;
+      color: var(--deep-cortex);
+      font-size: 17px;
+      line-height: 1.85;
+      text-wrap: pretty;
+    }
+
+    .thin-rule {
+      width: min(280px, 62vw);
+      height: 1px;
+      margin: 0 auto 28px;
+      background: var(--mist);
+    }
+
+    .level-pill {
+      display: inline-flex;
+      align-self: center;
+      align-items: center;
+      min-height: 40px;
+      border-radius: 999px;
+      padding: 0 18px;
+      color: var(--white);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .level-4,
+    .level-high {
+      background: var(--sage-mint);
+    }
+
+    .level-3,
+    .level-mid {
+      background: var(--clinical-blue);
+    }
+
+    .level-2,
+    .level-low,
+    .level-1 {
+      background: var(--muted-coral);
+    }
+
+    .scroll-cue {
+      margin: 52px 0 0;
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .section-number {
+      margin: 0 0 16px;
+      color: var(--clinical-blue);
+      font-size: 13px;
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .overview-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .score-block {
+      padding: 22px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .content-card,
+    .chart-card {
+      padding: 24px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 12px 32px rgba(46, 42, 74, 0.045);
+    }
+
+    .content-card {
+      display: grid;
+      gap: 14px;
+      background:
+        linear-gradient(135deg, rgba(198, 123, 110, 0.16), rgba(237, 234, 245, 0.4) 54%, rgba(255, 255, 255, 0.68)),
+        rgba(255, 255, 255, 0.68);
+    }
+
+    .content-card p {
+      padding: 16px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.82);
+      margin: 0;
+      color: var(--slate);
+      font-size: 16px;
+      line-height: 1.9;
+      text-wrap: pretty;
+    }
+
+    .content-card p:first-child {
+      border-left: 4px solid var(--muted-coral);
+      color: var(--deep-cortex);
+      font-size: 17px;
+    }
+
+    .content-card p:nth-of-type(2) {
+      border-left: 4px solid var(--clinical-blue);
+    }
+
+    .content-card p:nth-of-type(3) {
+      border-left: 4px solid var(--sage-mint);
+    }
+
+    .read-label {
+      display: inline-flex;
+      width: fit-content;
+      min-height: 28px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0 11px;
+      background: rgba(198, 123, 110, 0.14);
+      color: var(--muted-coral);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .read-label::before {
+      content: "!";
+      display: inline-grid;
+      place-items: center;
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+      border-radius: 999px;
+      background: var(--muted-coral);
+      color: var(--white);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .score-line {
+      display: flex;
+      align-items: baseline;
+      color: var(--neural-indigo);
+    }
+
+    .score-overview {
+      display: grid;
+      grid-template-columns: minmax(150px, auto) minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .score-brief {
+      display: grid;
+      gap: 6px;
+      text-align: left;
+    }
+
+    .score-brief span {
+      color: var(--clinical-blue);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .score-brief strong {
+      color: var(--deep-cortex);
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .score-brief p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .score-status {
+      display: grid;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background: rgba(237, 234, 245, 0.58);
+      text-align: left;
+    }
+
+    .score-status span {
+      color: var(--clinical-blue);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .score-status strong {
+      color: var(--deep-cortex);
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .score-status p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .status-meter {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .meter-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px;
+      gap: 10px;
+      align-items: center;
+      color: var(--slate);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .meter-copy {
+      display: grid;
+      gap: 3px;
+    }
+
+    .meter-copy strong {
+      color: var(--deep-cortex);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+    .meter-copy span {
+      color: var(--slate);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .meter-segment {
+      height: 12px;
+      border-radius: 999px;
+      background: var(--mist);
+      opacity: 0.45;
+    }
+
+    .meter-row.active {
+      color: var(--deep-cortex);
+      font-weight: 700;
+    }
+
+    .meter-row.active .meter-copy strong,
+    .meter-row.active .meter-copy span {
+      color: var(--deep-cortex);
+    }
+
+    .meter-row.active .meter-segment {
+      opacity: 1;
+      background: var(--active-color);
+      box-shadow: 0 6px 14px rgba(46, 42, 74, 0.12);
+    }
+
+    .score-number {
+      font-family: var(--numeric);
+      font-size: clamp(72px, 18vw, 110px);
+      font-weight: 300;
+      line-height: 0.9;
+    }
+
+    .score-outof {
+      margin-left: 5px;
+      color: var(--slate);
+      font-size: 18px;
+    }
+
+    .report-score .score-outof,
+    .dimension-score .score-outof,
+    .score-card strong .score-outof {
+      margin-left: 3px;
+    }
+
+    .level-heading {
+      margin: 0 0 14px;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(24px, 6vw, 32px);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .status-heading {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .status-heading span {
+      color: var(--clinical-blue);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .status-heading h2 {
+      margin: 0;
+    }
+
+    .status-heading p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .result-summary {
+      display: grid;
+      gap: 10px;
+      margin-top: 0;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 96px 1fr 42px;
+      gap: 12px;
+      align-items: center;
+      color: var(--slate);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .bar-track {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--mist);
+    }
+
+    .bar-fill {
+      width: var(--score);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--clinical-blue);
+    }
+
+    .prose {
+      margin: 0;
+      color: var(--slate);
+      font-size: 16px;
+      line-height: 1.9;
+      text-wrap: pretty;
+      white-space: pre-line;
+    }
+
+    .radar-area {
+      display: grid;
+      gap: 28px;
+      justify-items: center;
+    }
+
+    .chart-card {
+      width: min(100%, 560px);
+      display: grid;
+      place-items: center;
+    }
+
+    .radar {
+      width: min(100%, 460px);
+      height: auto;
+      overflow: visible;
+    }
+
+    .score-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+
+    .score-card {
+      min-height: 126px;
+      padding: 18px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.62);
+      display: grid;
+      grid-template-columns: 1fr 118px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .score-card h3 {
+      margin: 0 0 12px;
+      color: var(--deep-cortex);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    .score-card strong {
+      display: block;
+      margin-bottom: 14px;
+      color: var(--neural-indigo);
+      font-family: var(--numeric);
+      font-size: 36px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .card-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .score-card .bar-track {
+      margin-top: 14px;
+    }
+
+    .score-card-visual {
+      display: grid;
+      place-items: center;
+      min-height: 104px;
+      border-radius: 8px;
+      background: rgba(237, 234, 245, 0.38);
+    }
+
+    .score-card-visual .brain {
+      width: 118px;
+    }
+
+    .mini-tag {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0 9px;
+      color: var(--white);
+      font-size: 12px;
+    }
+
+    .dimension-report {
+      display: grid;
+      gap: 22px;
+    }
+
+    .dimension-report-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: end;
+    }
+
+    .dimension-report h2 {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(28px, 7vw, 40px);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .dimension-report-visual {
+      display: grid;
+      grid-template-columns: 0.86fr 1.14fr;
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .dimension-report-visual .brain {
+      width: min(100%, 300px);
+    }
+
+    .key-panel {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .key-panel h3 {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .key-panel p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .region-line {
+      margin: 8px 0 0;
+      color: var(--slate);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .dimension-score {
+      color: var(--neural-indigo);
+      font-family: var(--numeric);
+      font-size: clamp(48px, 12vw, 72px);
+      font-weight: 300;
+      line-height: 0.94;
+      white-space: nowrap;
+    }
+
+    .dimension-statement {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(21px, 5vw, 26px);
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .insight-card {
+      min-height: 118px;
+      padding: 16px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .insight-card span {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--clinical-blue);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .insight-card strong {
+      display: block;
+      color: var(--deep-cortex);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .copy-block {
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(107, 139, 176, 0.18), rgba(237, 234, 245, 0.44) 48%, rgba(255, 255, 255, 0.7)),
+        rgba(255, 255, 255, 0.68);
+    }
+
+    .copy-block p {
+      padding: 14px 15px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.82);
+      margin: 0;
+      color: var(--slate);
+      font-size: 16px;
+      line-height: 1.9;
+      text-wrap: pretty;
+    }
+
+    .copy-block p:first-child {
+      color: var(--deep-cortex);
+      font-size: 17px;
+    }
+
+    .copy-block p:nth-of-type(1) {
+      box-shadow: inset 4px 0 0 var(--clinical-blue);
+    }
+
+    .copy-block p:nth-of-type(2) {
+      box-shadow: inset 4px 0 0 var(--sage-mint);
+    }
+
+    .copy-block p:nth-of-type(3) {
+      box-shadow: inset 4px 0 0 var(--muted-coral);
+    }
+
+    .science-note {
+      margin-top: 10px;
+      padding: 18px;
+      border: 1px solid var(--mist);
+      border-radius: 8px;
+      background: rgba(237, 234, 245, 0.58);
+    }
+
+    .science-note h3 {
+      margin: 0 0 8px;
+      color: var(--neural-indigo);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .science-note p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .report-footer {
+      border-bottom: 0;
+      color: var(--slate);
+      text-align: center;
+    }
+
+    .report-footer h2 {
+      margin: 0 0 14px;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 500;
+    }
+
+    .restart {
+      margin-top: 28px;
+    }
+
+    .next-guide {
+      display: grid;
+      gap: 12px;
+      margin: 28px auto 0;
+      padding: 0;
+      border: 1px solid rgba(91, 83, 145, 0.18);
+      border-radius: 8px;
+      background: rgba(237, 234, 245, 0.32);
+      text-align: center;
+    }
+
+    .next-guide small {
+      color: var(--neural-indigo);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .next-guide h3 {
+      margin: 0;
+      color: var(--deep-cortex);
+      font-family: var(--serif);
+      font-size: clamp(24px, 6vw, 32px);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .next-guide p {
+      margin: 0;
+      color: var(--slate);
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .guide-actions {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .secondary-btn {
+      min-height: 50px;
+      border: 1px solid rgba(91, 83, 145, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.68);
+      color: var(--deep-cortex);
+      cursor: pointer;
+    }
+
+    .guide-btn {
+      border-color: transparent;
+      background: var(--neural-indigo);
+      color: var(--white);
+      font-weight: 700;
+      box-shadow: 0 12px 24px rgba(91, 83, 145, 0.18);
+    }
+
+    .guide-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(29, 27, 46, 0.42);
+    }
+
+    .guide-modal.active {
+      display: grid;
+    }
+
+    .guide-dialog {
+      width: min(100%, 480px);
+      padding: 28px;
+      border: 1px solid rgba(91, 83, 145, 0.16);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(237, 234, 245, 0.96), rgba(252, 251, 254, 0.98));
+      color: var(--deep-cortex);
+      box-shadow: 0 26px 70px rgba(29, 27, 46, 0.28);
+    }
+
+    .guide-dialog h3 {
+      margin: 12px 0 16px;
+      font-family: var(--serif);
+      font-size: clamp(28px, 7vw, 38px);
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .guide-dialog p {
+      margin: 0 0 16px;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .guide-dialog .notice {
+      padding: 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .copyright-bar {
+      width: min(100%, 780px);
+      margin: 30px auto 0;
+      padding: 12px 16px;
+      border: 1px solid rgba(91, 83, 145, 0.18);
+      border-radius: 8px;
+      background: rgba(237, 234, 245, 0.94);
+      color: var(--deep-cortex);
+      text-align: center;
+    }
+
+    .copyright-bar strong,
+    .copyright-bar span {
+      display: block;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .copyright-bar strong {
+      color: var(--neural-indigo);
+      font-weight: 700;
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 20px 18px 38px;
+      }
+
+      .panel {
+        gap: 24px;
+        min-height: calc(100vh - 58px);
+      }
+
+      .intro-item {
+        grid-template-columns: 40px 1fr;
+        padding: 16px;
+      }
+
+      .quiz-meta {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .quiz-meta-left,
+      .quiz-meta-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .question-area {
+        justify-content: center;
+        gap: 34px;
+        padding: 24px 0 38px;
+      }
+
+      .overview-grid,
+      .dimension-report-head,
+      .dimension-report-visual {
+        grid-template-columns: 1fr;
+      }
+
+      .score-overview {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .score-card,
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .score-card-visual {
+        order: -1;
+      }
+
+      .dimension-score {
+        justify-self: start;
+      }
+
+      .score-block {
+        position: static;
+      }
+
+      .dimension-visual {
+        padding: 14px 12px 12px;
+      }
+
+      .dimension-visual .brain,
+      .dimension-report-visual .brain,
+      .report-mark .brain {
+        width: min(100%, 340px);
+      }
+
+      .content-card,
+      .chart-card,
+      .copy-block,
+      .science-note,
+      .dimension-report-visual {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .score-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .primary-btn,
+      .ghost-btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <section class="screen active" id="introScreen" aria-labelledby="introTitle">
+      <div class="panel">
+        <div class="brain-wrap" aria-hidden="true"></div>
+        <div>
+          <p class="eyebrow">Prefrontal Cortex Assessment</p>
+          <h1 class="title" id="introTitle">在开始之前</h1>
+          <p class="subtitle">这是一份基于神经科学框架的 4 维度 · 28 题前额叶功能自评。请根据最近一个月的真实状态作答。</p>
+        </div>
+        <ol class="intro-list" aria-label="答题说明">
+          <li class="intro-item"><strong>01</strong><span>请基于“过去一个月”的真实状态作答，不要追求“理想答案”。</span></li>
+          <li class="intro-item"><strong>02</strong><span>每题没有对错，真实最重要。</span></li>
+          <li class="intro-item"><strong>03</strong><span>预计用时 5 分钟，请在不被打扰的环境中完成。</span></li>
+        </ol>
+        <div class="button-row">
+          <button class="primary-btn" type="button" id="startBtn">我准备好了</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="dimensionScreen" aria-live="polite">
+      <div class="panel dimension-panel">
+        <p class="dimension-code" id="dimensionCode"></p>
+        <div class="dimension-visual" id="dimensionVisual" aria-hidden="true"></div>
+        <h2 class="dimension-title" id="dimensionTitle"></h2>
+        <p class="dimension-subtitle" id="dimensionSubtitle"></p>
+        <p class="brain-region" id="dimensionRegion"></p>
+        <p class="dimension-desc" id="dimensionDescription"></p>
+        <div class="button-row">
+          <button class="primary-btn" type="button" id="dimensionBtn">开始这个维度</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="quizScreen" aria-live="polite">
+      <div class="quiz-shell">
+        <div class="progress" id="progressSegments" aria-hidden="true"></div>
+        <div class="quiz-meta">
+          <div class="quiz-meta-left">
+            <span id="progressText"></span>
+          </div>
+          <div class="quiz-meta-right">
+            <span class="pill" id="dimensionPill"></span>
+          </div>
+        </div>
+        <div class="question-area">
+          <h2 class="question" id="questionText"></h2>
+          <div class="answer-zone">
+            <div class="options" id="options"></div>
+            <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="analysisScreen" aria-labelledby="analysisTitle">
+      <div class="panel">
+        <div class="brain-wrap" aria-hidden="true"></div>
+        <h2 class="title" id="analysisTitle" style="text-align:center;">正在生成你的前额叶画像</h2>
+        <div class="analysis-steps">
+          <div class="analysis-step">正在计算执行功能分数…</div>
+          <div class="analysis-step">正在计算冲动控制分数…</div>
+          <div class="analysis-step">正在计算情绪调节分数…</div>
+          <div class="analysis-step">正在计算工作记忆分数…</div>
+          <div class="analysis-step">正在生成你的前额叶画像…</div>
+        </div>
+      </div>
+    </section>
+
+    <article class="report" id="report" aria-live="polite"></article>
+  </main>
+  <div class="guide-modal" id="guideModal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="guide-dialog">
+      <span class="read-label">后续指南</span>
+      <h3 id="guideTitle">后续指南里会有什么</h3>
+      <p>后续指南会包含睡眠修复、专注训练、情绪调节、冲动管理四个模块，帮助你把这份报告里的结果转化成更具体的恢复步骤。</p>
+      <p class="notice">如果你想继续领取更适合自己的建议，可以截图当前结果再发送给店家。非该店铺渠道均非官方授权，请注意辨别。</p>
+      <button class="secondary-btn guide-btn" type="button" id="closeGuideBtn">我知道了</button>
+    </div>
+  </div>
+  <script>
+    const dimensions = [
+      {
+        id: "executive",
+        number: "01",
+        name: "执行功能",
+        english: "Executive Function",
+        region: "背外侧前额叶皮层 · dlPFC",
+        description: "这个维度评估你在任务启动、分解、坚持和时间感知上的大脑表现。",
+        note: "背外侧前额叶皮层（dlPFC）负责将意图转化为行动。当它处于资源紧张状态时（睡眠不足、持续压力、多任务切换），启动新任务所需的葡萄糖代谢成本显著升高，你会真实地感到“启动很累”。这是生理现象，不是意志问题。",
+        questions: [
+          "我会把“明天一定开始”挂在嘴边，但第二天还是没开始。",
+          "面对一个需要分几步完成的任务，我会不知道从哪一步下手。",
+          "事情做到一半，我会突然失去动力，哪怕只剩最后一点点。",
+          "我很难判断一件事需要花多长时间，经常低估或高估。",
+          "哪怕我列了 to-do list，我也经常不按顺序做，最后漏掉重要的那几件。",
+          "我会同时开始好几件事，但每一件都没推进多少就停下来。",
+          "遇到复杂的任务，我宁愿先做简单的小事来回避它。"
+        ],
+        copy: {
+          high: {
+            statement: "你的执行系统整体清晰，意图更容易被稳定转化为行动。",
+            body: "你通常能够把目标拆成可执行的步骤，并在任务推进中保持较好的节奏感。即使任务本身复杂，你也较少被“从哪里开始”的不确定感卡住。\n\n这类状态说明你的前额叶在计划、启动、排序和持续执行上保持了较好的协同。需要留意的是，执行功能对睡眠、压力和信息过载非常敏感，稳定的环境管理会比临时的意志力更可靠。"
+          },
+          mid: {
+            statement: "你的执行系统基本可用，但在复杂任务前容易出现启动阻力。",
+            body: "你并不是没有目标，也不是不知道事情重要，而是当任务需要分解、排序或持续推进时，大脑会更容易进入拖延、回避或转向简单任务的模式。\n\n这种状态常见于长期压力、休息不足或多任务切换之后。它会让你在短期内看起来像“效率下降”，本质上更像是前额叶资源被反复消耗后的启动成本升高。"
+          },
+          low: {
+            statement: "你的执行系统目前负担较重，行动启动和持续推进都可能变得费力。",
+            body: "你可能经常处在“知道要做，但就是动不起来”的状态中。任务越重要、步骤越多、反馈越慢，大脑越容易自动寻找逃避路径，比如刷手机、做杂事或反复重新规划。\n\n这并不等同于懒惰。更准确地说，你的执行控制网络可能长期处在资源紧张状态，导致从意图到行动的转换链条变得不稳定。此时应优先降低任务启动门槛，而不是继续加压。"
+          }
+        }
+      },
+      {
+        id: "impulse",
+        number: "02",
+        name: "冲动控制",
+        english: "Impulse Control",
+        region: "眶额皮层 · OFC",
+        description: "这个维度评估你在延迟满足、抑制冲动和长短期权衡上的表现。",
+        note: "眶额皮层（OFC）负责对“即时奖励 vs 长期收益”进行权衡。现代数字环境（短视频、游戏、即时反馈）通过持续、高强度的多巴胺刺激，会让 OFC 对“小而即时”的奖励敏感度过度升高，对“大而延迟”的奖励敏感度下降。这是一种被环境塑造的神经适应，而非性格缺陷。",
+        questions: [
+          "我会忍不住刷手机、刷视频，停不下来，哪怕我知道该睡了或该工作了。",
+          "我会在情绪上头时说出后来让自己后悔的话。",
+          "看到想买的东西，我很难等过一晚再决定，经常当场下单。",
+          "别人还没说完话，我就会忍不住打断或接话。",
+          "我知道某件事对我不好（熬夜、暴食、拖延），但还是一次次做。",
+          "我会被突然冒出来的念头带走原本的计划（比如本来要工作，结果去整理房间）。",
+          "面对即时的小奖励和长期的大收益，我经常选择即时那个，事后后悔。"
+        ],
+        copy: {
+          high: {
+            statement: "你对即时刺激有较好的刹车能力，能把长期收益纳入当下选择。",
+            body: "你通常能够在冲动出现时停顿一下，不急着立刻行动。面对消费、社交回应、娱乐内容或情绪表达，你更容易保留一点观察空间。\n\n这说明你的奖励评估系统与抑制控制系统配合较好。它不代表你没有欲望，而是你能在欲望出现时不完全被它牵引。"
+          },
+          mid: {
+            statement: "你的冲动控制有一定弹性，但在疲惫或情绪上头时容易失守。",
+            body: "在状态好的时候，你能做出相对理性的选择；但当压力升高、睡眠不足、情绪被触发时，即时奖励会变得特别有吸引力，原本的计划也更容易被打断。\n\n这类波动很常见。它提示你与其单纯要求自己“克制”，不如减少高刺激环境的暴露，并提前设置选择边界。"
+          },
+          low: {
+            statement: "你的奖励系统目前更容易被即时反馈牵引，延迟满足会显得格外困难。",
+            body: "你可能经常出现“我知道不该这样，但还是做了”的体验。短视频、购物、熬夜、情绪化表达或临时起意的行动，会不断从长期目标里切走注意力和能量。\n\n这不是道德问题，而是前额叶对即时奖励的刹车能力下降。此时最有效的策略通常不是靠硬忍，而是把诱发冲动的入口变少、变远、变慢。"
+          }
+        }
+      },
+      {
+        id: "emotion",
+        number: "03",
+        name: "情绪调节",
+        english: "Emotion Regulation",
+        region: "腹内侧前额叶 · vmPFC / 前扣带回 · ACC",
+        description: "这个维度评估你在情绪识别、情绪恢复和情绪与行为分离上的表现。",
+        note: "腹内侧前额叶（vmPFC）和前扣带回（ACC）协同工作，对来自杏仁核的情绪信号进行“降噪”和“重评估”。长期高压环境会让杏仁核持续过度激活，而 vmPFC 的抑制能力相对下降，导致情绪反应更强、恢复更慢。这个失衡在脑影像上是可观察的结构性变化，不是“想开点”能解决的。",
+        questions: [
+          "一件小事（比如一条消息、一个眼神）能让我情绪波动半天甚至一天。",
+          "我生完气之后会反复回想，越想越气，而不是让它过去。",
+          "我很难在情绪来临的当下识别“我现在是什么感觉”。",
+          "别人的一句负面评价会在我脑子里循环播放很久。",
+          "我的情绪像过山车，高点很高，低点很低，中间地带很少。",
+          "我很难在情绪激动时暂停下来，事后才意识到反应过度了。",
+          "我会把情绪压下去假装没事，直到某一刻突然爆发或崩溃。"
+        ],
+        copy: {
+          high: {
+            statement: "你的情绪系统有较好的恢复力，感受能被识别，也较少直接控制行为。",
+            body: "你并不是不会有情绪，而是更容易知道自己正在经历什么，并在情绪强烈时保留一点选择空间。情绪来临后，你通常也能在相对合理的时间里恢复。\n\n这说明你的前额叶对情绪信号具有较好的调节能力。它让你既能感受到情绪，也不至于被情绪完全接管。"
+          },
+          mid: {
+            statement: "你的情绪调节能力处于可用但易耗损的状态，压力升高时恢复会变慢。",
+            body: "你可能平时看起来还算稳定，但一旦遇到评价、冲突、误解或关系压力，情绪就会在脑内停留很久。你不是不知道要放下，而是大脑还在反复处理威胁信号。\n\n这种状态提示情绪系统已经有一定疲劳。与其要求自己立刻平静，不如先训练情绪命名、暂停和身体降唤醒，让前额叶重新接管评估过程。"
+          },
+          low: {
+            statement: "你的情绪调节系统目前可能长期过载，情绪反应强、恢复慢、难暂停。",
+            body: "你可能经常被小事触发，或者在情绪过去很久后仍反复回想。压抑、爆发、后悔、再压抑的循环，也可能让你越来越难相信自己能稳定下来。\n\n这不是简单的“太敏感”。更可能是高压环境让情绪警报系统长期处于高敏状态，而前额叶的降噪能力暂时跟不上。此时需要先恢复安全感和规律性，而不是继续责备自己。"
+          }
+        }
+      },
+      {
+        id: "focus",
+        number: "04",
+        name: "工作记忆与专注",
+        english: "Working Memory & Focus",
+        region: "背外侧前额叶皮层 · dlPFC",
+        description: "这个维度评估你在信息暂存、注意维持和多信息处理上的表现。",
+        note: "工作记忆依赖 dlPFC 的神经元网络同步放电。研究显示，长期高频率任务切换会降低 dlPFC 灰质密度，而连续 8 周的正念或专注训练可以显著提升灰质密度和功能连接性。也就是说：专注力是一项可逆的、可训练的生理功能，不是固定的“天赋”。",
+        questions: [
+          "我走进一个房间，会突然忘记自己本来要干什么。",
+          "别人跟我说话，我点头了，但其实没真的听进去。",
+          "我读书或看文章时，需要反复回读同一段，因为走神了。",
+          "同时处理两三件事的时候，我会开始出错或感到大脑卡住。",
+          "刚认识的人的名字、刚看到的数字，我几乎立刻就忘了。",
+          "我会在对话中突然想不起自己刚才要说什么。",
+          "专注超过 20 分钟对我来说很困难，我的注意力会被各种念头打断。"
+        ],
+        copy: {
+          high: {
+            statement: "你的注意系统较稳定，信息暂存和持续处理能力保持良好。",
+            body: "你通常能够把当前任务所需的信息暂时放在脑中，并维持足够长的注意窗口。阅读、对话、工作处理或学习时，你较少频繁丢失线索。\n\n这说明你的工作记忆系统负荷管理较好。保持这种状态的关键，是继续减少无意义切换，让注意力有完整的工作周期。"
+          },
+          mid: {
+            statement: "你的专注能力仍可调动，但容易被切换、疲劳和信息密度拖累。",
+            body: "你可能不是完全无法专注，而是专注状态不够稳定。进入状态需要时间，维持状态需要安静环境，一旦被打断，就需要额外成本重新接上。\n\n这通常意味着工作记忆容量被持续占用。减少同时处理的事项、清空外部干扰、把信息写下来，会比单纯逼自己“集中注意力”更有效。"
+          },
+          low: {
+            statement: "你的工作记忆与专注系统目前负荷偏高，信息很容易从脑中滑走。",
+            body: "你可能经常忘记刚才要做什么、刚听到什么、刚想说什么。阅读需要反复回看，对话容易断线，多任务会让大脑像被卡住一样。\n\n这不代表你能力差，而是前额叶需要同时维持的信息太多，或长期被高频刺激切碎。此时应优先建立单任务环境，把记忆负担外置，而不是继续要求大脑硬撑。"
+          }
+        }
+      }
+    ];
+
+    const options = [
+      { label: "从不", value: 0 },
+      { label: "偶尔", value: 1 },
+      { label: "有时", value: 2 },
+      { label: "经常", value: 3 },
+      { label: "总是", value: 4 }
+    ];
+
+    const totalLevels = [
+      {
+        min: 85,
+        level: 4,
+        label: "整体状态稳定",
+        range: "85–100 分",
+        meaning: "整体前额叶功能稳定，当前调控能力较好。",
+        summary: "你的前额叶目前整体比较稳定，计划、专注、情绪和冲动控制都处在相对顺畅的状态。",
+        className: "level-4",
+        body: "你的前额叶当前处于健康运转状态。四个核心功能维度均在理想区间，这在现代生活方式下并不常见，它通常意味着你拥有稳定的作息、有意识的信息输入管理、以及较低的慢性压力水平。\n\n需要提醒的是，前额叶状态会随环境因素剧烈波动。一次持续的睡眠剥夺、一段高压时期、一次情绪创伤，都可能让功能在数周内滑向下一档。保持当前状态所需要的“成本”，远低于失去之后重建的成本。"
+      },
+      {
+        min: 70,
+        level: 3,
+        label: "出现早期疲惫",
+        range: "70–84 分",
+        meaning: "整体仍在正常范围，但已有早期疲惫信号。",
+        summary: "你的前额叶还在正常运转范围内，但已经开始出现疲惫迹象，继续透支会更容易往下滑。",
+        className: "level-3",
+        body: "你的前额叶整体处在正常运转范围内，但在某些维度已经出现了早期弱化信号。这是一个易被忽视但至关重要的阶段，因为当前的困扰还没有严重到让你警觉，但神经机制上的损耗正在悄悄累积。\n\n临床观察显示，从“良好”滑向“亚健康”通常需要 3–6 个月，而从“亚健康”恢复到“良好”需要 6–12 个月。在当前阶段建立保护机制，是投入产出比最高的干预时机。"
+      },
+      {
+        min: 50,
+        level: 2,
+        label: "功能负荷偏高",
+        range: "50–69 分",
+        meaning: "前额叶资源消耗偏高，需要开始做恢复和保护。",
+        summary: "你的前额叶资源已经明显被消耗，拖延、分心、情绪波动和依赖即时刺激会更容易出现。",
+        className: "level-2",
+        body: "你的前额叶正处于明显的过劳状态。持续的信息过载、睡眠不足、多任务切换和情绪压抑，正在让它的资源被消耗的速度超过修复的速度。\n\n你可能已经感受到了这些后果：执行力在下降、情绪越来越难稳定、专注变成一件费力的事、越来越依赖即时反馈（短视频、刷社交平台）来获取多巴胺。这些不是“性格缺陷”或“意志力问题”，它们是前额叶功能性下调的标准表现。\n\n这个阶段的好消息是：前额叶具有很强的可塑性，有针对性的生活方式调整通常能在 2–3 个月内带来可感知的改善。"
+      },
+      {
+        min: 0,
+        level: 1,
+        label: "建议优先恢复",
+        range: "0–49 分",
+        meaning: "当前困扰较明显，建议优先降低负荷并考虑专业支持。",
+        summary: "你的前额叶目前负荷比较重，最近的状态已经不只是累，而是需要优先休息、减压和重新建立节律。",
+        className: "level-1",
+        body: "你在四个前额叶核心维度上均表现出明显困扰。这种全面性的低分通常不是单一原因造成的，它往往是长期慢性压力、睡眠剥夺、情绪创伤、过度数字化生活共同作用的结果，有时也与 ADHD、抑郁、焦虑障碍等状况存在共病。\n\n请先给自己一个重要的认知：你走到今天不是因为“不够努力”，而是因为你一直在用一颗疲惫的大脑持续地努力。这本身就是一种很难被旁人看见的消耗。\n\n在当前分数段，我们建议你一方面考虑通过系统性的生活方式重建来恢复前额叶功能，另一方面，如果这些困扰已经持续影响工作、学习或人际关系，请同时考虑寻求精神科或心理咨询的专业评估。自评工具无法替代临床诊断。"
+      }
+    ];
+
+    const state = {
+      currentDimension: 0,
+      currentQuestionInDimension: 0,
+      answers: []
+    };
+
+    const els = {
+      introScreen: document.querySelector("#introScreen"),
+      dimensionScreen: document.querySelector("#dimensionScreen"),
+      quizScreen: document.querySelector("#quizScreen"),
+      analysisScreen: document.querySelector("#analysisScreen"),
+      report: document.querySelector("#report"),
+      startBtn: document.querySelector("#startBtn"),
+      dimensionBtn: document.querySelector("#dimensionBtn"),
+      dimensionCode: document.querySelector("#dimensionCode"),
+      dimensionTitle: document.querySelector("#dimensionTitle"),
+      dimensionSubtitle: document.querySelector("#dimensionSubtitle"),
+      dimensionRegion: document.querySelector("#dimensionRegion"),
+      dimensionDescription: document.querySelector("#dimensionDescription"),
+      dimensionVisual: document.querySelector("#dimensionVisual"),
+      progressSegments: document.querySelector("#progressSegments"),
+      progressText: document.querySelector("#progressText"),
+      dimensionPill: document.querySelector("#dimensionPill"),
+      questionText: document.querySelector("#questionText"),
+      options: document.querySelector("#options"),
+      backBtn: document.querySelector("#backBtn"),
+      guideModal: document.querySelector("#guideModal"),
+      closeGuideBtn: document.querySelector("#closeGuideBtn")
+    };
+
+    function brainSvg(region = "pfc", isPulse = false) {
+      const highlightMap = {
+        pfc: `
+          <path class="region-active" d="M52 96c1-38 29-63 70-63 6 0 12 1 18 2-16 20-19 46-8 75-25-13-52-14-80-3V96Z"/>
+          <path class="region-secondary" d="M66 91c5-24 25-40 55-41-8 15-9 33-3 52-17-7-35-7-52-1V91Z"/>
+        `,
+        executive: `
+          <path class="region-active" d="M79 57c13-16 35-24 61-22-14 19-18 42-10 68-18-8-34-10-52-5-5-14-5-28 1-41Z"/>
+        `,
+        impulse: `
+          <path class="region-active" d="M53 104c6-21 25-34 55-34 2 14 8 26 20 38-26-9-52-9-76 0l1-4Z"/>
+        `,
+        emotion: `
+          <path class="region-active" d="M101 94c12-9 27-9 43-2 3 18 13 31 29 42-29 4-52-2-69-17-8-7-9-15-3-23Z"/>
+          <path class="region-secondary" d="M131 64c23 12 39 31 45 57" style="fill:none"/>
+        `,
+        focus: `
+          <path class="region-active" d="M86 49c14-12 33-17 54-14-16 21-19 46-8 75-18-8-35-10-53-5-6-19-4-39 7-56Z"/>
+          <path class="region-secondary" d="M119 36c15 21 17 44 6 68" style="fill:none"/>
+        `
+      };
+      const labelMap = {
+        pfc: "PFC 前额叶",
+        executive: "dlPFC 背外侧",
+        impulse: "OFC 眶额皮层",
+        emotion: "vmPFC / ACC",
+        focus: "dlPFC 专注网络"
+      };
+      const labelMeta = {
+        pfc: { line: [73, 122, 32, 171], box: [8, 166, 118, 34], text: [21, 187] },
+        executive: { line: [103, 54, 47, 31], box: [14, 13, 126, 34], text: [27, 34] },
+        impulse: { line: [77, 109, 31, 170], box: [8, 166, 126, 34], text: [21, 187] },
+        emotion: { line: [151, 111, 212, 166], box: [185, 166, 122, 34], text: [198, 187] },
+        focus: { line: [116, 48, 190, 26], box: [174, 12, 132, 34], text: [187, 33] }
+      };
+      const label = labelMeta[region] || labelMeta.pfc;
+      return `
+        <svg class="brain${isPulse ? " pulse" : ""}" viewBox="0 0 320 220" role="img" aria-label="前额叶区域示意图">
+          <path d="M112 177c-33-4-61-30-65-64-5-43 27-80 72-80 11-21 35-34 61-28 20 5 35 18 43 37 28 5 50 29 50 60 0 39-31 70-72 72l-89 3Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M123 35c-13 18-15 42-3 65M171 8c-13 18-16 43-5 68M222 45c-22 12-36 33-39 61M80 90c21-9 43-5 60 10M124 133c31-20 69-21 104-2M82 130c18 16 42 23 72 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.65"/>
+          <path class="region-fill" d="M52 96c1-38 29-63 70-63 6 0 12 1 18 2-16 20-19 46-8 75-25-13-52-14-80-3V96Z" fill="currentColor"/>
+          ${highlightMap[region] || highlightMap.pfc}
+          <path d="M92 126 C90 150, 101 166, 128 177" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.72"/>
+          <line x1="${label.line[0]}" y1="${label.line[1]}" x2="${label.line[2]}" y2="${label.line[3]}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <rect class="label-box" x="${label.box[0]}" y="${label.box[1]}" width="${label.box[2]}" height="${label.box[3]}" rx="8" stroke-width="1"/>
+          <text x="${label.text[0]}" y="${label.text[1]}" fill="currentColor" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600">${labelMap[region] || labelMap.pfc}</text>
+        </svg>`;
+    }
+
+    function reportSummarySvg(scores, total) {
+      const colors = ["#5B5391", "#C67B6E", "#7FA394", "#6B8BB0"];
+      const items = scores.map((item, index) => ({...item, color: colors[index] || "#5B5391"}));
+      return `
+        <div class="report-mark-main">
+          <div class="report-mark-visual" aria-hidden="true">
+            ${brainSvg("pfc", false)}
+          </div>
+          <div class="report-mark-score">
+            <span class="label">当前总分</span>
+            <div class="value">${total}<small>/100</small></div>
+            <div class="label">四维概览</div>
+            <div class="report-mark-legend">
+              ${items.map((item) => `
+                <div class="legend-item">
+                  <span class="dot" style="background:${item.color}"></span>
+                  <span>${item.name}</span>
+                  <span class="score">${item.score}</span>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </div>
+        <div class="report-mark-foot">四维综合画像</div>
+      `;
+    }
+
+    function installBrains() {
+      document.querySelector("#introScreen .brain-wrap").innerHTML = brainSvg("pfc", false);
+      document.querySelector("#analysisScreen .brain-wrap").innerHTML = brainSvg("pfc", true);
+    }
+
+    function showScreen(screen) {
+      [els.introScreen, els.dimensionScreen, els.quizScreen, els.analysisScreen].forEach((item) => item.classList.remove("active"));
+      els.report.classList.remove("active");
+      if (screen === "report") {
+        els.report.classList.add("active");
+      } else {
+        els[`${screen}Screen`].classList.add("active");
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showDimensionIntro(index) {
+      const dimension = dimensions[index];
+      els.dimensionCode.textContent = `维度 ${dimension.number} / 04`;
+      els.dimensionTitle.textContent = dimension.name;
+      els.dimensionSubtitle.textContent = dimension.english;
+      els.dimensionRegion.textContent = dimension.region;
+      els.dimensionDescription.textContent = dimension.description;
+      els.dimensionVisual.innerHTML = `${brainSvg(dimension.id, false)}<p class="visual-caption"><span class="alert-dot">!</span><span>脑区定位：${dimension.region} 是本维度的主要参考区域。</span></p>`;
+      showScreen("dimension");
+    }
+
+    function getAbsoluteQuestionIndex() {
+      return state.currentDimension * 7 + state.currentQuestionInDimension;
+    }
+
+    function renderProgress() {
+      const currentDimension = state.currentDimension;
+      const currentInDimension = state.currentQuestionInDimension;
+      els.progressSegments.innerHTML = dimensions.map((_, index) => {
+        let fill = 0;
+        if (index < currentDimension) fill = 100;
+        if (index === currentDimension) fill = ((currentInDimension + 1) / 7) * 100;
+        return `<span style="--fill:${fill}%"></span>`;
+      }).join("");
+    }
+
+    function showQuestion() {
+      const dimension = dimensions[state.currentDimension];
+      const questionIndex = state.currentQuestionInDimension;
+      const absoluteQuestion = getAbsoluteQuestionIndex();
+      renderProgress();
+      els.backBtn.disabled = absoluteQuestion === 0;
+      els.progressText.textContent = `${String(absoluteQuestion + 1).padStart(2, "0")} / 28`;
+      els.dimensionPill.textContent = `${dimension.number} · ${dimension.name}`;
+      els.questionText.textContent = dimension.questions[questionIndex];
+      els.options.innerHTML = options.map((option) => `
+        <button class="option${state.answers[absoluteQuestion] === option.value ? " selected" : ""}" type="button" data-value="${option.value}">
+          ${option.label}
+        </button>
+      `).join("");
+      showScreen("quiz");
+    }
+
+    function answerQuestion(value, button) {
+      [...els.options.children].forEach((item) => item.disabled = true);
+      button.classList.add("selected");
+      state.answers[getAbsoluteQuestionIndex()] = value;
+      window.setTimeout(() => {
+        state.currentQuestionInDimension += 1;
+        if (state.currentQuestionInDimension < 7) {
+          showQuestion();
+          return;
+        }
+        state.currentDimension += 1;
+        state.currentQuestionInDimension = 0;
+        if (state.currentDimension < dimensions.length) {
+          showDimensionIntro(state.currentDimension);
+          return;
+        }
+        showAnalysis();
+      }, 300);
+    }
+
+    function goBackQuestion() {
+      const absoluteQuestion = getAbsoluteQuestionIndex();
+      if (absoluteQuestion === 0) return;
+      const previous = absoluteQuestion - 1;
+      state.currentDimension = Math.floor(previous / 7);
+      state.currentQuestionInDimension = previous % 7;
+      showQuestion();
+    }
+
+    function showAnalysis() {
+      showScreen("analysis");
+      window.setTimeout(() => {
+        renderReport(calculateScores());
+        showScreen("report");
+      }, 4000);
+    }
+
+    function calculateScores() {
+      const dimensionScores = dimensions.map((dimension, dimensionIndex) => {
+        const start = dimensionIndex * 7;
+        const raw = state.answers.slice(start, start + 7).reduce((sum, value) => sum + Number(value || 0), 0);
+        const score = Math.round((28 - raw) * (100 / 28));
+        return { ...dimension, raw, score };
+      });
+      const total = Math.round(dimensionScores.reduce((sum, item) => sum + item.score, 0) / dimensionScores.length);
+      return { dimensionScores, total };
+    }
+
+    function getTotalLevel(score) {
+      return totalLevels.find((level) => score >= level.min);
+    }
+
+    function getDimensionBand(score) {
+      if (score >= 75) return { key: "high", label: "高位 · Strong", short: "高", className: "level-high" };
+      if (score >= 50) return { key: "mid", label: "中等 · Moderate", short: "中", className: "level-mid" };
+      return { key: "low", label: "偏低 · Needs Care", short: "低", className: "level-low" };
+    }
+
+    function paragraphs(text) {
+      return text.split("\\n\\n").map((paragraph) => `<p>${paragraph}</p>`).join("");
+    }
+
+    function readingBlocks(text) {
+      return text.split("\\n\\n").flatMap((paragraph) => {
+        const sentences = paragraph.split("。").map((item) => item.trim()).filter(Boolean).map((item) => `${item}。`);
+        if (sentences.length <= 2) return [paragraph];
+        const blocks = [];
+        for (let index = 0; index < sentences.length; index += 2) {
+          blocks.push(sentences.slice(index, index + 2).join(""));
+        }
+        return blocks;
+      }).map((paragraph) => `<p>${paragraph}</p>`).join("");
+    }
+
+    function formatDate(date = new Date()) {
+      return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+    }
+
+    function radarSvg(scores) {
+      const size = 420;
+      const center = size / 2;
+      const maxRadius = 138;
+      const levels = [0.25, 0.5, 0.75, 1];
+      const pointsFor = (ratio) => scores.map((item, index) => {
+        const angle = -Math.PI / 2 + index * (Math.PI * 2 / scores.length);
+        const radius = maxRadius * ratio(item.score, index);
+        return `${center + Math.cos(angle) * radius},${center + Math.sin(angle) * radius}`;
+      }).join(" ");
+      const axis = scores.map((item, index) => {
+        const angle = -Math.PI / 2 + index * (Math.PI * 2 / scores.length);
+        const x = center + Math.cos(angle) * maxRadius;
+        const y = center + Math.sin(angle) * maxRadius;
+        const labelX = center + Math.cos(angle) * (maxRadius + 42);
+        const labelY = center + Math.sin(angle) * (maxRadius + 42);
+        return `
+          <line x1="${center}" y1="${center}" x2="${x}" y2="${y}" stroke="#E4E1EC" stroke-width="1"/>
+          <text x="${labelX}" y="${labelY}" text-anchor="middle" dominant-baseline="middle" fill="#605B72" font-size="13">${item.name}</text>
+        `;
+      }).join("");
+      const rings = levels.map((level) => `
+        <polygon points="${pointsFor(() => level)}" fill="none" stroke="#E4E1EC" stroke-width="1"/>
+      `).join("");
+      return `
+        <svg class="radar" viewBox="0 0 ${size} ${size}" role="img" aria-label="四维画像雷达图">
+          ${rings}
+          ${axis}
+          <polygon points="${pointsFor((score) => score / 100)}" fill="rgba(91,83,145,0.08)" stroke="#5B5391" stroke-width="2"/>
+          ${scores.map((item, index) => {
+            const angle = -Math.PI / 2 + index * (Math.PI * 2 / scores.length);
+            const radius = maxRadius * (item.score / 100);
+            const x = center + Math.cos(angle) * radius;
+            const y = center + Math.sin(angle) * radius;
+            return `<circle cx="${x}" cy="${y}" r="4" fill="#5B5391"/>`;
+          }).join("")}
+        </svg>
+      `;
+    }
+
+    function renderReport({ dimensionScores, total }) {
+      const totalLevel = getTotalLevel(total);
+      const cards = dimensionScores.map((item) => {
+        const band = getDimensionBand(item.score);
+        return `
+          <section class="score-card">
+            <div>
+              <div class="card-topline">
+                <h3>${item.name}</h3>
+                <span class="mini-tag ${band.className}">${band.short}</span>
+              </div>
+              <strong>${item.score}<span class="score-outof">/ 100</span></strong>
+              <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="--score:${item.score}%"></div></div>
+              <p class="region-line">${item.region}</p>
+            </div>
+            <div class="score-card-visual" aria-hidden="true">${brainSvg(item.id, false)}</div>
+          </section>
+        `;
+      }).join("");
+      const summaryRows = dimensionScores.map((item) => `
+        <div class="summary-row">
+          <span>${item.name}</span>
+          <div class="bar-track" aria-hidden="true"><div class="bar-fill" style="--score:${item.score}%"></div></div>
+          <strong>${item.score}</strong>
+        </div>
+      `).join("");
+      const dimensionReports = dimensionScores.map((item) => {
+        const band = getDimensionBand(item.score);
+        const copy = item.copy[band.key];
+        return `
+          <section class="dimension-report">
+            <p class="section-number">03 · ${item.name}</p>
+            <div class="dimension-report-head">
+              <div>
+                <h2>${item.name}</h2>
+                <p class="region-line">${item.region}</p>
+              </div>
+              <div class="dimension-score">${item.score}<span class="score-outof">/ 100</span></div>
+            </div>
+            <div class="dimension-report-visual">
+              <div class="brain-wrap" aria-hidden="true">${brainSvg(item.id, false)}</div>
+              <div class="key-panel">
+                <h3>重点看这里：${copy.statement}</h3>
+                <p>${item.description}</p>
+              </div>
+            </div>
+            <span class="level-pill ${band.className}">${band.label}</span>
+            <p class="dimension-statement">${copy.statement}</p>
+            <div class="insight-grid">
+              <div class="insight-card">
+                <span>当前分数</span>
+                <strong>${item.score} / 100</strong>
+              </div>
+              <div class="insight-card">
+                <span>脑区定位</span>
+                <strong>${item.region}</strong>
+              </div>
+              <div class="insight-card">
+                <span>重点结论</span>
+                <strong>${band.label}</strong>
+              </div>
+            </div>
+            <div class="copy-block">${paragraphs(copy.body)}</div>
+            <aside class="science-note">
+              <h3>神经科学注释</h3>
+              <p>${item.note}</p>
+            </aside>
+          </section>
+        `;
+      }).join("");
+
+      els.report.innerHTML = `
+        <section class="report-cover">
+          <div class="report-mark" aria-hidden="true">${reportSummarySvg(dimensionScores, total)}</div>
+          <p class="report-kicker">Prefrontal Cortex Assessment</p>
+          <h1 class="report-title">你的前额叶功能报告</h1>
+          <p class="report-date">评估日期：${formatDate()}</p>
+          <div class="thin-rule"></div>
+          <p class="subtitle">总分 ${total} / 100</p>
+          <p class="report-summary-text">${totalLevel.summary}</p>
+          <p class="scroll-cue">向下滑动查看完整报告 ↓</p>
+        </section>
+
+        <section class="report-section">
+          <p class="section-number">01 · 总体评估</p>
+          <div class="overview-grid">
+            <div class="score-block">
+              <div class="score-overview">
+                <div class="score-line report-score">
+                  <span class="score-number">${total}</span>
+                  <span class="score-outof">/ 100</span>
+                </div>
+                <div class="score-brief">
+                  <span>当前结果</span>
+                  <strong>${totalLevel.label}</strong>
+                  <p>${totalLevel.summary}</p>
+                </div>
+              </div>
+              <div class="result-summary">${summaryRows}</div>
+            </div>
+            <div class="content-card"><span class="read-label">结果解读</span>${readingBlocks(totalLevel.body)}</div>
+          </div>
+        </section>
+
+        <section class="report-section">
+          <p class="section-number">02 · 四维画像</p>
+          <div class="radar-area">
+            <div class="chart-card">${radarSvg(dimensionScores)}</div>
+            <div class="score-cards">${cards}</div>
+          </div>
+        </section>
+
+        ${dimensionReports}
+
+        <footer class="report-footer">
+          <h2>评估完成</h2>
+          <p class="prose">本工具为自我评估参考，不构成医学诊断。如相关困扰已持续影响工作、学习、睡眠或人际关系，请考虑寻求精神科、心理咨询或其他专业人士的进一步评估。</p>
+          <section class="next-guide">
+            <div class="guide-actions">
+              <button class="secondary-btn guide-btn" type="button" id="guideBtn">查看后续指南</button>
+              <button class="secondary-btn" type="button" id="restartBtn">重新评估</button>
+            </div>
+          </section>
+          <aside class="copyright-bar" aria-label="版权声明">
+            <strong>正版渠道仅限 小红书店铺「Jsence情绪治愈小屋」</strong>
+            <span>未经许可不得搬运、转售或商用；发现侵权将追究责任。</span>
+          </aside>
+        </footer>
+      `;
+      document.querySelector("#restartBtn").addEventListener("click", resetAssessment);
+      document.querySelector("#guideBtn").addEventListener("click", () => {
+        els.guideModal.classList.add("active");
+      });
+    }
+
+    function resetAssessment() {
+      state.currentDimension = 0;
+      state.currentQuestionInDimension = 0;
+      state.answers = [];
+      showScreen("intro");
+    }
+
+    els.startBtn.addEventListener("click", () => showDimensionIntro(0));
+    els.dimensionBtn.addEventListener("click", showQuestion);
+    els.backBtn.addEventListener("click", goBackQuestion);
+    els.options.addEventListener("click", (event) => {
+      const button = event.target.closest(".option");
+      if (!button) return;
+      answerQuestion(Number(button.dataset.value), button);
+    });
+    els.closeGuideBtn.addEventListener("click", () => {
+      els.guideModal.classList.remove("active");
+    });
+    els.guideModal.addEventListener("click", (event) => {
+      if (event.target === els.guideModal) {
+        els.guideModal.classList.remove("active");
+      }
+    });
+
+    installBrains();
+  </script>
+</body>
+</html>
