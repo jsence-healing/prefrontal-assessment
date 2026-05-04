@@ -531,26 +531,28 @@
     }
 
     .question-copy {
-      display: inline-block;
+      display: block;
+      min-width: 0;
     }
 
     .question-prefix {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      width: 22px;
+      justify-self: start;
+      align-self: start;
       flex: 0 0 auto;
       color: var(--neural-indigo);
       font-size: 13px;
       line-height: 1;
       letter-spacing: 0;
+      margin-top: 4px;
     }
 
-    .question-prefix::before,
-    .question-prefix::after {
-      content: "";
-      width: 7px;
-      height: 7px;
+    .question-prefix .prefix-dot {
+      width: 6px;
+      height: 6px;
       border: 1.5px solid currentColor;
       border-radius: 999px;
       opacity: 0.7;
@@ -603,17 +605,17 @@
     }
 
     .question.enlarged {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 26px minmax(0, 1fr);
       align-items: center;
-      justify-content: center;
-      column-gap: 8px;
-      row-gap: 10px;
+      column-gap: 14px;
+      row-gap: 8px;
+      text-align: center;
     }
 
     .question-copy {
-      flex: 1 1 16ch;
-      min-width: 0;
+      justify-self: stretch;
+      max-width: 100%;
     }
 
     .question.enlarged {
@@ -2251,7 +2253,7 @@
       els.dimensionPill.textContent = `${dimension.number} · ${dimension.name}`;
       els.dimensionExplain.innerHTML = `<span class="alert-dot">!</span><span class="explain-text">${dimension.description}</span>`;
       els.questionCard.className = `question-card question-card--${dimension.id}`;
-      els.questionPrefix.textContent = "◎◎";
+      els.questionPrefix.innerHTML = Array.from({ length: Number(dimension.number) || 1 }, () => '<span class="prefix-dot" aria-hidden="true"></span>').join("");
       els.questionCopy.textContent = dimension.questions[questionIndex];
       els.options.innerHTML = options.map((option) => `
         <button class="option${state.answers[absoluteQuestion] === option.value ? " selected" : ""}" type="button" data-value="${option.value}">
