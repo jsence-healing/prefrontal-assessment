@@ -512,9 +512,21 @@
       padding: 4px 0 32px;
     }
 
-    .question {
+    .question-card {
       width: min(100%, 720px);
       margin: 0 auto;
+      padding: 26px 24px 24px;
+      border: 1px solid rgba(107, 97, 168, 0.18);
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 18px 18px, rgba(110, 122, 185, 0.08) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(243, 240, 249, 0.9));
+      box-shadow: 0 18px 36px rgba(94, 85, 140, 0.06);
+    }
+
+    .question {
+      width: 100%;
+      margin: 0;
       color: var(--deep-cortex);
       font-family: var(--serif);
       font-size: clamp(21px, 5vw, 28px);
@@ -1620,6 +1632,11 @@
         margin-top: -76px;
       }
 
+      .question-card {
+        padding: 18px 16px 18px;
+        border-radius: 16px;
+      }
+
       .question.enlarged {
         font-size: clamp(38px, 9.8vw, 50px);
         line-height: 1.22;
@@ -1759,7 +1776,9 @@
           </div>
         </div>
         <div class="question-area">
-          <h2 class="question enlarged" id="questionText"></h2>
+          <div class="question-card" aria-hidden="false">
+            <h2 class="question enlarged" id="questionText"></h2>
+          </div>
           <div class="answer-zone">
             <div class="options" id="options"></div>
             <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
