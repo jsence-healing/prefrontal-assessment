@@ -530,6 +530,32 @@
       overflow: hidden;
     }
 
+    .question-copy {
+      display: inline-block;
+    }
+
+    .question-prefix {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex: 0 0 auto;
+      color: var(--neural-indigo);
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .question-prefix::before,
+    .question-prefix::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border: 1.5px solid currentColor;
+      border-radius: 999px;
+      opacity: 0.7;
+    }
+
     .question-card::before {
       content: "";
       display: block;
@@ -574,6 +600,20 @@
       line-height: 1.55;
       text-align: center;
       text-wrap: balance;
+    }
+
+    .question.enlarged {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      column-gap: 8px;
+      row-gap: 10px;
+    }
+
+    .question-copy {
+      flex: 1 1 16ch;
+      min-width: 0;
     }
 
     .question.enlarged {
@@ -1669,7 +1709,7 @@
       }
 
       .question-card {
-        padding: 28px 14px 24px;
+        padding: 28px 10px 24px;
         border-radius: 16px;
       }
 
@@ -1817,7 +1857,10 @@
         </div>
         <div class="question-area">
           <div class="question-card" id="questionCard" aria-hidden="false">
-            <h2 class="question enlarged" id="questionText"></h2>
+            <h2 class="question enlarged" id="questionText">
+              <span class="question-prefix" id="questionPrefix" aria-hidden="true"></span>
+              <span class="question-copy" id="questionCopy"></span>
+            </h2>
           </div>
           <div class="answer-zone">
             <div class="options" id="options"></div>
@@ -2064,6 +2107,8 @@
       dimensionPill: document.querySelector("#dimensionPill"),
       dimensionExplain: document.querySelector("#dimensionExplain"),
       questionText: document.querySelector("#questionText"),
+      questionPrefix: document.querySelector("#questionPrefix"),
+      questionCopy: document.querySelector("#questionCopy"),
       questionCard: document.querySelector("#questionCard"),
       options: document.querySelector("#options"),
       backBtn: document.querySelector("#backBtn"),
@@ -2206,7 +2251,8 @@
       els.dimensionPill.textContent = `${dimension.number} · ${dimension.name}`;
       els.dimensionExplain.innerHTML = `<span class="alert-dot">!</span><span class="explain-text">${dimension.description}</span>`;
       els.questionCard.className = `question-card question-card--${dimension.id}`;
-      els.questionText.textContent = dimension.questions[questionIndex];
+      els.questionPrefix.textContent = "◎◎";
+      els.questionCopy.textContent = dimension.questions[questionIndex];
       els.options.innerHTML = options.map((option) => `
         <button class="option${state.answers[absoluteQuestion] === option.value ? " selected" : ""}" type="button" data-value="${option.value}">
           ${option.label}
