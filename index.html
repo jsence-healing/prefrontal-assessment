@@ -519,7 +519,7 @@
       border: 1px solid rgba(107, 97, 168, 0.18);
       border-radius: 20px;
       display: grid;
-      gap: 18px;
+      gap: 0;
       background:
         radial-gradient(circle at 18px 18px, rgba(110, 122, 185, 0.08) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
         linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(243, 240, 249, 0.9));
@@ -539,25 +539,25 @@
     .question-card--executive {
       background:
         radial-gradient(circle at 18px 18px, rgba(91, 83, 145, 0.1) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(243, 240, 249, 0.9));
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(243, 240, 249, 0.94));
     }
 
     .question-card--impulse {
       background:
         radial-gradient(circle at 18px 18px, rgba(198, 123, 110, 0.1) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 242, 240, 0.92));
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 242, 240, 0.94));
     }
 
     .question-card--emotion {
       background:
         radial-gradient(circle at 18px 18px, rgba(127, 163, 148, 0.1) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 244, 0.92));
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 247, 244, 0.94));
     }
 
     .question-card--focus {
       background:
         radial-gradient(circle at 18px 18px, rgba(107, 139, 176, 0.1) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(242, 245, 250, 0.92));
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(242, 245, 250, 0.94));
     }
 
     .question {
@@ -1659,7 +1659,7 @@
 
       .question-area {
         justify-content: flex-start;
-        gap: 18px;
+        gap: 16px;
         padding: 84px 0 24px;
         min-height: 0;
       }
@@ -1667,7 +1667,6 @@
       .question-card {
         padding: 18px 16px 18px;
         border-radius: 16px;
-        gap: 14px;
       }
 
       .question-area .question {
@@ -1815,10 +1814,10 @@
         <div class="question-area">
           <div class="question-card" id="questionCard" aria-hidden="false">
             <h2 class="question enlarged" id="questionText"></h2>
-            <div class="answer-zone">
-              <div class="options" id="options"></div>
-              <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
-            </div>
+          </div>
+          <div class="answer-zone">
+            <div class="options" id="options"></div>
+            <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
           </div>
         </div>
       </div>
