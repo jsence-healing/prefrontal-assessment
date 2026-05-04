@@ -1610,9 +1610,27 @@
       }
 
       .question-area {
-        justify-content: center;
-        gap: 28px;
-        padding: 12px 0 34px;
+        justify-content: flex-start;
+        gap: 34px;
+        padding: 26px 0 30px;
+        min-height: 0;
+      }
+
+      .question-area .question {
+        margin-top: 8px;
+      }
+
+      .question.enlarged {
+        font-size: clamp(30px, 8vw, 38px);
+        line-height: 1.34;
+      }
+
+      .answer-zone {
+        gap: 18px;
+      }
+
+      .option {
+        min-height: 58px;
       }
 
       .overview-grid,
