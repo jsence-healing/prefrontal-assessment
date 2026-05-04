@@ -508,16 +508,18 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: clamp(20px, 3.5vh, 36px);
+      gap: clamp(18px, 3vh, 28px);
       padding: 4px 0 32px;
     }
 
     .question-card {
       width: min(100%, 720px);
       margin: 0 auto;
-      padding: 24px 24px 22px;
+      padding: 26px 24px 22px;
       border: 1px solid rgba(107, 97, 168, 0.18);
       border-radius: 20px;
+      display: grid;
+      gap: 18px;
       background:
         radial-gradient(circle at 18px 18px, rgba(110, 122, 185, 0.08) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
         linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(243, 240, 249, 0.9));
@@ -529,7 +531,7 @@
       display: block;
       width: 72px;
       height: 4px;
-      margin: 0 auto 20px;
+      margin: 0 auto 2px;
       border-radius: 999px;
       background: linear-gradient(90deg, rgba(91, 83, 145, 0.18), rgba(91, 83, 145, 0.56), rgba(91, 83, 145, 0.18));
     }
@@ -1657,18 +1659,19 @@
 
       .question-area {
         justify-content: flex-start;
-        gap: 34px;
+        gap: 18px;
         padding: 84px 0 24px;
         min-height: 0;
-      }
-
-      .question-area .question {
-        margin-top: -76px;
       }
 
       .question-card {
         padding: 18px 16px 18px;
         border-radius: 16px;
+        gap: 14px;
+      }
+
+      .question-area .question {
+        margin-top: -76px;
       }
 
       .question.enlarged {
@@ -1810,12 +1813,12 @@
           </div>
         </div>
         <div class="question-area">
-          <div class="question-card" aria-hidden="false">
+          <div class="question-card" id="questionCard" aria-hidden="false">
             <h2 class="question enlarged" id="questionText"></h2>
-          </div>
-          <div class="answer-zone">
-            <div class="options" id="options"></div>
-            <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
+            <div class="answer-zone">
+              <div class="options" id="options"></div>
+              <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
+            </div>
           </div>
         </div>
       </div>
@@ -2058,6 +2061,7 @@
       dimensionPill: document.querySelector("#dimensionPill"),
       dimensionExplain: document.querySelector("#dimensionExplain"),
       questionText: document.querySelector("#questionText"),
+      questionCard: document.querySelector("#questionCard"),
       options: document.querySelector("#options"),
       backBtn: document.querySelector("#backBtn"),
       guideModal: document.querySelector("#guideModal"),
@@ -2198,7 +2202,7 @@
       els.progressText.textContent = `${String(absoluteQuestion + 1).padStart(2, "0")} / 28`;
       els.dimensionPill.textContent = `${dimension.number} · ${dimension.name}`;
       els.dimensionExplain.innerHTML = `<span class="alert-dot">!</span><span class="explain-text">${dimension.description}</span>`;
-      els.questionText.closest(".question-card").className = `question-card question-card--${dimension.id}`;
+      els.questionCard.className = `question-card question-card--${dimension.id}`;
       els.questionText.textContent = dimension.questions[questionIndex];
       els.options.innerHTML = options.map((option) => `
         <button class="option${state.answers[absoluteQuestion] === option.value ? " selected" : ""}" type="button" data-value="${option.value}">
