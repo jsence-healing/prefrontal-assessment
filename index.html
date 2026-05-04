@@ -2100,7 +2100,6 @@
       dimensionPill: document.querySelector("#dimensionPill"),
       dimensionExplain: document.querySelector("#dimensionExplain"),
       questionText: document.querySelector("#questionText"),
-      questionPrefix: document.querySelector("#questionPrefix"),
       questionCopy: document.querySelector("#questionCopy"),
       questionCard: document.querySelector("#questionCard"),
       options: document.querySelector("#options"),
@@ -2244,7 +2243,6 @@
       els.dimensionPill.textContent = `${dimension.number} · ${dimension.name}`;
       els.dimensionExplain.innerHTML = `<span class="alert-dot">!</span><span class="explain-text">${dimension.description}</span>`;
       els.questionCard.className = `question-card question-card--${dimension.id}`;
-      els.questionPrefix.innerHTML = Array.from({ length: Number(dimension.number) || 1 }, () => '<span class="prefix-dot" aria-hidden="true"></span>').join("");
       els.questionCopy.textContent = dimension.questions[questionIndex];
       els.options.innerHTML = options.map((option) => `
         <button class="option${state.answers[absoluteQuestion] === option.value ? " selected" : ""}" type="button" data-value="${option.value}">
