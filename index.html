@@ -535,29 +535,6 @@
       min-width: 0;
     }
 
-    .question-prefix {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
-      width: 22px;
-      justify-self: start;
-      align-self: start;
-      flex: 0 0 auto;
-      color: var(--neural-indigo);
-      font-size: 13px;
-      line-height: 1;
-      letter-spacing: 0;
-      margin-top: 4px;
-    }
-
-    .question-prefix .prefix-dot {
-      width: 6px;
-      height: 6px;
-      border: 1.5px solid currentColor;
-      border-radius: 999px;
-      opacity: 0.7;
-    }
-
     .question-card::before {
       content: "";
       display: block;
@@ -605,11 +582,7 @@
     }
 
     .question.enlarged {
-      display: grid;
-      grid-template-columns: 18px minmax(0, 1fr);
-      align-items: center;
-      column-gap: 8px;
-      row-gap: 8px;
+      display: block;
       text-align: center;
     }
 
@@ -1711,7 +1684,7 @@
       }
 
       .question-card {
-        padding: 28px 8px 24px;
+        padding: 28px 4px 24px;
         border-radius: 16px;
       }
 
@@ -1859,10 +1832,7 @@
         </div>
         <div class="question-area">
           <div class="question-card" id="questionCard" aria-hidden="false">
-            <h2 class="question enlarged" id="questionText">
-              <span class="question-prefix" id="questionPrefix" aria-hidden="true"></span>
-              <span class="question-copy" id="questionCopy"></span>
-            </h2>
+            <h2 class="question enlarged" id="questionText"><span class="question-copy" id="questionCopy"></span></h2>
           </div>
           <div class="answer-zone">
             <div class="options" id="options"></div>
