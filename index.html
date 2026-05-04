@@ -537,8 +537,7 @@
       justify-content: flex-start;
       gap: 10px;
       background:
-        radial-gradient(circle at 18px 18px, rgba(110, 122, 185, 0.12) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(248, 246, 253, 0.98), rgba(239, 236, 247, 0.98));
+        linear-gradient(180deg, rgba(249, 248, 252, 0.98), rgba(241, 239, 247, 0.98));
       box-shadow: 0 18px 36px rgba(94, 85, 140, 0.08);
       overflow: hidden;
     }
@@ -548,6 +547,21 @@
       min-width: 0;
     }
 
+    .question-copy::before {
+      content: "";
+      display: inline-block;
+      width: 18px;
+      height: 10px;
+      margin: 0 8px 1px 0;
+      vertical-align: middle;
+      border: 1.4px solid var(--question-accent, var(--neural-indigo));
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 28% 50%, var(--question-accent, var(--neural-indigo)) 0 2px, transparent 2.3px),
+        radial-gradient(circle at 72% 50%, var(--question-accent, var(--neural-indigo)) 0 2px, transparent 2.3px);
+      opacity: 0.76;
+    }
+
     .question-card::before {
       content: "";
       display: block;
@@ -555,31 +569,23 @@
       height: 4px;
       margin: 0 auto 2px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(91, 83, 145, 0.18), rgba(91, 83, 145, 0.56), rgba(91, 83, 145, 0.18));
+      background: linear-gradient(90deg, rgba(91, 83, 145, 0.12), rgba(91, 83, 145, 0.44), rgba(91, 83, 145, 0.12));
     }
 
     .question-card--executive {
-      background:
-        radial-gradient(circle at 18px 18px, rgba(91, 83, 145, 0.14) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(248, 246, 253, 0.99), rgba(239, 236, 247, 0.99));
+      --question-accent: rgba(91, 83, 145, 0.72);
     }
 
     .question-card--impulse {
-      background:
-        radial-gradient(circle at 18px 18px, rgba(198, 123, 110, 0.14) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(250, 246, 244, 0.99), rgba(243, 237, 234, 0.99));
+      --question-accent: rgba(198, 123, 110, 0.72);
     }
 
     .question-card--emotion {
-      background:
-        radial-gradient(circle at 18px 18px, rgba(127, 163, 148, 0.14) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(246, 250, 248, 0.99), rgba(237, 245, 241, 0.99));
+      --question-accent: rgba(127, 163, 148, 0.72);
     }
 
     .question-card--focus {
-      background:
-        radial-gradient(circle at 18px 18px, rgba(107, 139, 176, 0.14) 0 1px, transparent 1.5px) 0 0 / 26px 26px,
-        linear-gradient(180deg, rgba(246, 248, 251, 0.99), rgba(238, 242, 248, 0.99));
+      --question-accent: rgba(107, 139, 176, 0.72);
     }
 
     .question {
