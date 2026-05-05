@@ -525,6 +525,12 @@
       padding: 4px 0 32px;
     }
 
+    .quiz-footer {
+      width: min(100%, 780px);
+      margin: 28px auto 0;
+      padding: 0 0 4px;
+    }
+
     .question-card {
       width: min(100%, 720px);
       margin: 0 auto;
@@ -1653,9 +1659,9 @@
     }
 
     #closeGuideBtn {
-      width: min(100%, 180px);
-      justify-self: center;
-      margin: 0 auto;
+      display: block;
+      width: min(100%, 260px);
+      margin: 18px auto 0;
     }
 
     .copyright-bar {
@@ -1711,6 +1717,10 @@
         justify-content: flex-start;
         padding: 32px 0 24px;
         min-height: 0;
+      }
+
+      .quiz-footer {
+        margin-top: 22px;
       }
 
       .question-card {
@@ -1875,6 +1885,10 @@
             <div class="options" id="options"></div>
             <button class="back-btn answer-back" type="button" id="backBtn">修改上一题</button>
           </div>
+          <aside class="copyright-bar quiz-footer" aria-label="版权声明">
+            <strong>正版渠道仅限 小红书店铺「Jsence情绪治愈小屋」</strong>
+            <span>未经许可不得搬运、转售或商用；发现侵权将追究责任。</span>
+          </aside>
         </div>
       </div>
     </section>
